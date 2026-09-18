@@ -21,6 +21,7 @@ msbuild.wrn
 # Visual Studio files
 vs/
 vscode/
+.vscode/
 !.vscode/settings.json
 # Rider files
 idea/
