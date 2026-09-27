@@ -1,3 +1,7 @@
+
+/// <summary>
+/// A slug <see cref="ValueObject<string>"/>
+/// </summary>
 public sealed record Slug : ValueObjet<string>
 {
     public Slug(string value) : base(value)

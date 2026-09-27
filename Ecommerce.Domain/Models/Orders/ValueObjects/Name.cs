@@ -1,3 +1,6 @@
+/// <summary>
+/// A name <see cref="ValueObject<string>"/>
+/// </summary>
 public sealed record Name : ValueObjet<string>
 {
     public Name(string value) : base(value)
