@@ -1,3 +1,7 @@
+
+/// <summary>
+/// An Enum indicating the type of error
+/// </summary>
 public enum ErrorType
 {
     Validation,

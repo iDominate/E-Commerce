@@ -1,5 +1,10 @@
 using System.Linq.Expressions;
 
+
+/// <summary>
+/// A concret generic implementation of the <see cref="ISpecification"/>
+/// </summary>
+/// <typeparam name="T">The Aggregate root</typeparam>
 public class Specification<T> : ISpecification<T> where T : AggregateRoot
 {
     public Expression<Func<T, bool>>? Criteria {get; protected set;}
@@ -38,7 +43,7 @@ public class Specification<T> : ISpecification<T> where T : AggregateRoot
         this.OrderByDescending = orderByDescending;
     }
 
-    public void ApplyPaging(int skip, int take)
+    public void ApplyPagination(int skip, int take)
     {
         this.Skip = skip;
         this.Take = take;
