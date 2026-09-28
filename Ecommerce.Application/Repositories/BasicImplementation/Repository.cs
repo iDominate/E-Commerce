@@ -1,6 +1,10 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// A generic implmentation for <see cref="IRepository<T>"/>
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class Repository<T> : IRepository<T> where T : AggregateRoot
 {
     private DbSet<T> _dbSet;
