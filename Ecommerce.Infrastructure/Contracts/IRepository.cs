@@ -11,7 +11,7 @@ public interface IRepository<T> where T : AggregateRoot
     /// </summary>
     /// <param name="entity">the entity instance</param>
     /// <returns>The newly created instance</returns>
-    public Task<T> CreateAsynce(T entity);
+    public Task<T> CreateAsync(T entity);
     /// <summary>
     /// Get enttit(ies) using a given <see cref="ISpecification<T>"/>
     /// </summary>

@@ -15,7 +15,7 @@ public class Specification<T> : ISpecification<T> where T : AggregateRoot
 
     public Expression<Func<T, object>>? OrderByDescending {get; protected set;}
 
-    public bool IsPaginingEnabled {get; protected set; }
+    public bool IsPaginatingEnabled {get; protected set; }
 
     public int? Skip {get; protected set; }
 
@@ -47,7 +47,7 @@ public class Specification<T> : ISpecification<T> where T : AggregateRoot
     {
         this.Skip = skip;
         this.Take = take;
-        this.IsPaginingEnabled = true;
+        this.IsPaginatingEnabled = true;
     }
 
     public void EnableAsNoTracking()

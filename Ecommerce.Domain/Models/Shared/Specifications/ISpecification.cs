@@ -28,7 +28,7 @@ public interface ISpecification<T> where T : AggregateRoot
     /// <summary>
     /// Whether pagination is enabled
     /// </summary>
-    bool IsPaginingEnabled {get; }
+    bool IsPaginatingEnabled {get; }
     /// <summary>
     /// Tells the EFcore to not track entities
     /// </summary>
@@ -43,4 +43,11 @@ public interface ISpecification<T> where T : AggregateRoot
     /// The number of entities to fetch for the pagination
     /// </summary>
     int? Take {get; }
+
+    public void AddCriteria(Expression<Func<T, bool>> expression);
+    public void AddInclude(Expression<Func<T, object>> expression);
+    public void AddOrderBy(Expression<Func<T, object>> expression);
+    public void AddOrderByDescending(Expression<Func<T, object>> orderByDescending);
+    public void ApplyPagination(int skip, int take);
+    public void EnableAsNoTracking();
 }

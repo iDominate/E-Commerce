@@ -20,31 +20,31 @@ public static class QueryEvaluatorBuilder
     {
        if(specification.Criteria is not null)
         {
-            query.Where(specification.Criteria);
+            query = query.Where(specification.Criteria);
         }
         if(specification.OrderBy is not null)
         {
-            query.OrderBy(specification.OrderBy);
+            query = query.OrderBy(specification.OrderBy);
         }
         if(specification.OrderByDescending is not null)
         {
-            query.OrderByDescending(specification.OrderByDescending);
+            query = query.OrderByDescending(specification.OrderByDescending);
         }
         if(specification.AsNoTracking == true)
         {
-            query.AsNoTracking();   
+            query = query.AsNoTracking();   
         }
-        if(specification.IsPaginingEnabled == true 
+        if(specification.IsPaginatingEnabled == true 
         && specification.Skip is not null 
         && specification.Take is not null)
         {
-            query.Take(specification.Take.Value).Skip(specification.Skip.Value);
+           query =  query.Skip(specification.Skip.Value).Take(specification.Take.Value);
         }
         if(specification.Includes!.Count != 0)
         {
             foreach(var include in specification.Includes)
             {
-                query.Include(include);
+                query = query.Include(include);
             }
         }
         return query;

@@ -15,7 +15,7 @@ public class Repository<T> : IRepository<T> where T : AggregateRoot
         _dbContext = appDb;
     }
 
-    public async Task<T> CreateAsynce(T entity)
+    public async Task<T> CreateAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
         await _dbContext.SaveChangesAsync();        

@@ -2,6 +2,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
 {
+    public AppDbContext()
+    {
+        
+    }
     public AppDbContext(DbContextOptions<AppDbContext> dbContext) : base(dbContext)
     {   
     }
