@@ -1,3 +1,4 @@
+using Ecommerce.Domain.Models.Orders.Entities;
 using MediatR;
 
 public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRequestHandler<GetCategoryByIdQuery, Result<Category>>
@@ -12,6 +13,7 @@ public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRe
         {
             var error = new Error("CategoryNotFound", "Category not found", ErrorType.NotFound);
             return Result<Category>.Failure([error]);
+            
         }
 
         return Result<Category>.Success(category.First());
