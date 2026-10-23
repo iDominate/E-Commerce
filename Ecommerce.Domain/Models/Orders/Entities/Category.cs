@@ -1,4 +1,4 @@
-
+namespace Ecommerce.Domain.Models.Orders.Entities;
 /// <summary>
 /// The category Aggerate root which implements <see cref="IAuditable"/>
 /// </summary>
