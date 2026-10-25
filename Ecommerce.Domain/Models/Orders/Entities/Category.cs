@@ -24,6 +24,10 @@ public sealed class Category : AggregateRoot, IAuditable
     public DateTime UpdatedAt { get; private set; }
     
 
-    public void UpdateName(Name name) => this.Name = name;
-    public void UpdateSlug(Slug slug) => this.Slug = Slug;
+    public void UpdateValues(Name name, Slug slug)
+    {
+        this.Name = name;
+        this.Slug = slug;
+        this.UpdatedAt = DateTime.UtcNow;
+    }
 }

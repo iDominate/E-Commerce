@@ -1,3 +1,4 @@
+using Ecommerce.Application.Category.Errors;
 using Ecommerce.Domain.Models.Orders.Entities;
 using MediatR;
 
@@ -11,8 +12,7 @@ public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRe
         var category = await repository.GetEntitiesAsync(specification);
         if(category == null || !category.Any())
         {
-            var error = new Error("CategoryNotFound", "Category not found", ErrorType.NotFound);
-            return Result<Category>.Failure([error]);
+            return Result<Category>.Failure([CategoryErrors.NotFound]);
             
         }
 

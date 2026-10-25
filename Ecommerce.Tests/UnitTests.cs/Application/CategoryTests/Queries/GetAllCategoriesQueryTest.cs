@@ -1,3 +1,4 @@
+using Ecommerce.Domain.Models.Orders.Entities;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ public sealed class GetAllCategoriesQueryTest : GenericRepositoryProvider<Catego
         .ReturnsAsync(new List<Category>());
 
         var handler = new GetAllCategoriesCommandHandler(
-            this._mockRepo.Object, this._mockDbSet);
+            this._mockRepo.Object);
 
         //Act
         var result = await handler.

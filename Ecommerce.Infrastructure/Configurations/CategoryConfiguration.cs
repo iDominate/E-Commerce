@@ -1,3 +1,4 @@
+using Ecommerce.Domain.Models.Orders.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

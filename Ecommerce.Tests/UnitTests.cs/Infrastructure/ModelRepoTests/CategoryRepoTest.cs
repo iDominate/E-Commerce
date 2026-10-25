@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Ecommerce.Domain.Models.Orders.Entities;
 using FluentAssertions;
 
 public class CategoryRepoTest : GenericRepoTest<Category>

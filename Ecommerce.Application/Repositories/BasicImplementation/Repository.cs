@@ -12,9 +12,9 @@ public class Repository<T> : IRepository<T> where T : AggregateRoot
     public Repository(DbSet<T> dbSet, AppDbContext appDb)
     {
         _dbSet = dbSet;
-        _dbContext = appDb;
-    }
-
+        this._dbContext = appDb;
+    } 
+    
     public async Task<T> CreateAsync(T entity)
     {
         await _dbSet.AddAsync(entity);
@@ -28,15 +28,20 @@ public class Repository<T> : IRepository<T> where T : AggregateRoot
         return await query.ToListAsync();
     }
 
-    public async Task<IEnumerable<Guid>?> RemoveEntityAsync(Expression<Func<T, bool>> expression)
+    public async Task<bool> RemoveEntityAsync(ISpecification<T> specification)
     {
-        var existingEntities = await _dbSet.Where(expression).ToArrayAsync();
-        if(existingEntities.Length != 0)
-        {    
-         _dbSet.RemoveRange(existingEntities);
-         await _dbContext.SaveChangesAsync();
-         return existingEntities.Select(e => e.Id).ToList();
+        
+        var query = await QueryEvaluatorBuilder.GetQuery(_dbSet, specification).ToListAsync();
+        if(query.Count == 0)
+        {
+            return false;
         }
-        return null;
+        this._dbContext.RemoveRange(query);
+        return true;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await this._dbContext.SaveChangesAsync();
     }
 }

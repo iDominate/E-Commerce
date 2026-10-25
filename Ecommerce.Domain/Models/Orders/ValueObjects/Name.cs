@@ -8,6 +8,7 @@ public sealed record Name : ValueObjet<string>
     }
     public override ValueObjet<string> CreateInstance(string value)
     {
+        
         return new Name(value);           
     }
 }

@@ -16,7 +16,6 @@ public sealed class Result<T>
     }
 
     public bool IsSuccess {get;}
-    public bool isFailure => !IsSuccess;
     public IReadOnlyList<Error> Errors {get;} = [];
 
     public T Value => IsSuccess ? _value! : throw new InvalidOperationException("cannot access the value");

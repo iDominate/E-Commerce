@@ -24,5 +24,7 @@ public interface IRepository<T> where T : AggregateRoot
     /// </summary>
     /// <param name="expression">A filter to query the existing entity</param>
     /// <returns><see cref="Guid"/> if successfull, else null</returns>
-    public Task<IEnumerable<Guid>?> RemoveEntityAsync(Expression<Func<T, bool>> expression); 
+    public Task<bool> RemoveEntityAsync(ISpecification<T> specification);
+
+    public Task SaveChangesAsync(); 
 }
