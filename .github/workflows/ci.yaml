@@ -1,0 +1,30 @@
+name: Testing Workflow
+on:
+    push:
+        paths:
+            - 'Ecommerce.Tests/**'
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup .NET Version 10
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: '10.0.x'
+
+            - name: Restore
+              run: dotnet restore
+
+            - name: Build
+              run: dotnet build --no-restore --configuration Release
+            
+            - name: Run Unit Tests
+              run: |
+                dotnet test ./Ecommerce.Tests/Ecommerce.Tests.csproj --configuration Release \
+                 --logger "console;verbosity=detailed"
+                
+    

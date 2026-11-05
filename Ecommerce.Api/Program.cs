@@ -1,4 +1,6 @@
-using Microsoft.AspNetCore.RateLimiting;
+using Ecommerce.Api.MIddlewares;
+using Ecommerce.Api.ServicesRegisteration.cs;
+using Ecommerce.Infrastructure;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,48 +9,30 @@ Log.Logger = new LoggerConfiguration()
 .WriteTo.Console()
 .CreateLogger(); //Configure Logging
 #endregion
-#region IOptions pattern
-builder.Services.AddOptions<SqlServerOptions>()
-.BindConfiguration("ConnectionStrings:SqlServer");
-builder.Services.AddOptions<RedisOptions>()
-.BindConfiguration(RedisOptions.SectionName);
-#endregion
-#region Rate limiting
-builder.Services.AddRateLimiter(o =>
+if(builder.Environment.IsEnvironment("Testing"))
 {
-    o.AddSlidingWindowLimiter("api", configureOptions =>
-    {
-        configureOptions.PermitLimit = 100;
-        configureOptions.Window =TimeSpan.FromMinutes(1);
-        configureOptions.SegmentsPerWindow = 6;
-        configureOptions.QueueLimit = 0;
-    });
-    o.AddFixedWindowLimiter("auth", configureOptions =>
-    {
-        configureOptions.PermitLimit = 5;
-        configureOptions.Window = TimeSpan.FromMinutes(1);
-        configureOptions.QueueLimit = 0;
-    });
-});
-#endregion
-#region Health checks
-var redisOptions = builder.Configuration.GetSection(RedisOptions.SectionName)
-.Get<RedisOptions>(); 
-builder.Services.AddHealthChecks().
-AddSqlServer(builder.Configuration.GetConnectionString("SqlServer")!)
-.AddRedis(
-    redisOptions!.ToConfig().ToString(),
-    "redis"
-);
-#endregion
+    builder.Services.AddInfrastructureTesting();
+} else
+{
+    builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("SqlServer")!);    
+}
+builder.Services.AddApplication();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+builder.Services.AddRateLimitingService();
+builder.Services.AddHealthChecks();
+builder.Services.AddEndpoints();
+
+
+
 builder.Host.UseSerilog();
 builder.Services.AddHttpLogging();
 var app = builder.Build();
 app.UseStaticFiles();
 app.UseHttpLogging();
 app.UseHealthChecks("/health");
-app.MapGet("/", () => "Hello World");
-
+app.UseExceptionHandler();
+app.MapEndpoints();
 app.Run();
 
 
