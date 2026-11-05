@@ -1,7 +1,10 @@
+using Ecommerce.Application.Shared;
 using FluentValidation;
 using MediatR;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+where TResponse : IApplicationResult 
+
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
@@ -25,7 +28,9 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             .ToList();
         
         if (failures.Count != 0)
+        {
             throw new ValidationException(failures);
+        }
         return await next();
     }
 }

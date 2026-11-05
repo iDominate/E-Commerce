@@ -1,25 +1,23 @@
-using System.Runtime.CompilerServices;
+    using System.Runtime.CompilerServices;
+    using Ecommerce.Application.Shared;
 
-public sealed class Result<T>
-{
-    private readonly T? _value;
-    private Result(T value)
+    public class ApplicationResult<T> : IApplicationResult
     {
-        this._value = value;
-        this.IsSuccess = true;        
+        public T? Value {get; init;}
+
+        public ApplicationResult(T? value = default(T), bool isSuccess = true,
+        IReadOnlyList<Error> errors = null!)
+        {
+            Value = value;
+            IsSuccess = isSuccess;
+            Errors = errors;
+        }
+
+        public bool IsSuccess {get; init;}
+        public IReadOnlyList<Error> Errors {get; init;} = [];
+
+        public static ApplicationResult<T> Success(T value) => new ApplicationResult<T>(value);
+        public static ApplicationResult<T> Failure(Error[] errors) => new ApplicationResult<T>(isSuccess: false,
+        errors: errors);
+        public static implicit operator ApplicationResult<T>(T value) => new ApplicationResult<T>(value: value);
     }
-
-    private Result(Error[] errors)
-    {
-        this.Errors = errors;
-        IsSuccess = false; 
-    }
-
-    public bool IsSuccess {get;}
-    public IReadOnlyList<Error> Errors {get;} = [];
-
-    public T Value => IsSuccess ? _value! : throw new InvalidOperationException("cannot access the value");
-    public static Result<T> Success(T value) => new Result<T>(value);
-    public static Result<T> Failure(Error[] errors) => new Result<T>(errors);
-    public static implicit operator Result<T>(T value) => new Result<T>(value);
-}

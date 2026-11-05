@@ -1,5 +1,4 @@
-using System.Linq.Expressions;
-
+namespace Ecommerce.Application.Repositories.Contracts;
 /// <summary>
 /// A generic repository
 /// </summary>

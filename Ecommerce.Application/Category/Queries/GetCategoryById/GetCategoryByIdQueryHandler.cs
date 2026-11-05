@@ -1,10 +1,11 @@
 using Ecommerce.Application.Category.Errors;
+using Ecommerce.Application.Repositories.Contracts;
 using Ecommerce.Domain.Models.Orders.Entities;
 using MediatR;
 
-public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRequestHandler<GetCategoryByIdQuery, Result<Category>>
+public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRequestHandler<GetCategoryByIdQuery, ApplicationResult<Category>>
 {
-    public async Task<Result<Category>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+    public async Task<ApplicationResult<Category>> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
     {
         Specification<Category> specification = new Specification<Category>();
         specification.AddCriteria(x => x.Id == request.Id);
@@ -12,10 +13,10 @@ public class GetCategoryByIdQueryHandler(IRepository<Category> repository) : IRe
         var category = await repository.GetEntitiesAsync(specification);
         if(category == null || !category.Any())
         {
-            return Result<Category>.Failure([CategoryErrors.NotFound]);
+            return ApplicationResult<Category>.Failure([CategoryErrors.NotFound]);
             
         }
 
-        return Result<Category>.Success(category.First());
+        return ApplicationResult<Category>.Success(category.First());
     }
 }
