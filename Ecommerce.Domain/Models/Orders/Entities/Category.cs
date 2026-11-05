@@ -4,11 +4,13 @@ namespace Ecommerce.Domain.Models.Orders.Entities;
 /// </summary>
 public sealed class Category : AggregateRoot, IAuditable
 {
-    public Category(Name name, Slug slug)
+    private Category(Name name, Slug slug)
     {
         Name = name;
         Slug = slug;
     }
+
+    public static Category Create(Name name, Slug slug) => new Category(name, slug);
     /// <summary>
     /// The name of the category
     /// </summary>
