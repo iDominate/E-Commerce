@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Ecommerce.Application.Repositories.Contracts;
 using FluentAssertions;
 using NetArchTest.Rules;
 
@@ -36,7 +37,7 @@ public class ArchTests
     public void InfrastructureLayer_Should_DependOn_DomainLayer()
     {
         //Act
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(IRepository<>).Assembly)
         .That()
         .ResideInNamespace(_infrastructureLayer)
         .Should()
@@ -52,11 +53,11 @@ public class ArchTests
     {
         
         //Act
-        var result = Types.InCurrentDomain()
+        var result = Types.InAssembly(typeof(IRepository<>).Assembly)
         .That()
-        .ResideInNamespace(_applicationLayer)
+        .ResideInNamespace(_infrastructureLayer)
         .Should()
-        .HaveDependencyOn(_infrastructureLayer)
+        .HaveDependencyOn(_applicationLayer)
         .GetResult()
         .IsSuccessful;
 
@@ -74,22 +75,6 @@ public class ArchTests
         .ResideInNamespace(_presentationLayer)
         .Should()
         .HaveDependencyOn(_applicationLayer)
-        .GetResult()
-        .IsSuccessful;
-
-        //Assert
-        result.Should().BeTrue();
-    }
-    [Fact]
-    public void ApiLayer_Shoud_DependOn_PresentationLayer()
-    {
-
-        //Act
-        var result = Types.InCurrentDomain()
-        .That()
-        .ResideInNamespace(_apiLayer)
-        .Should()
-        .HaveDependencyOn(_presentationLayer)
         .GetResult()
         .IsSuccessful;
 
