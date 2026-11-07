@@ -12,12 +12,12 @@ public class GetAllCategories : IEndpoint
     {
         routeBuilder.MapGet("/api/category/", HandleAsync);
     }
-    public async Task<IResult>  HandleAsync(HttpContext context, ISender sender)
+    public async Task<IResult>  HandleAsync([FromServices] ISender sender)
     {
        var result = await sender.Send(new GetAllCategoriesCommand());
        var response = ApiResponse<IEnumerable<CategoryResponseDto>>.
        Successful(
-        CategoryResponseDto.ToMultipleObjectsResponse(result.Value)
+        CategoryResponseDto.ToMultipleObjectsResponse(result!.Value!)
         );
         return Results.Ok(response);
     }

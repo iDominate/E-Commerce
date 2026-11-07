@@ -12,6 +12,7 @@ public sealed class DeleteCategoryCommandHandler(IRepository<Category> repositor
         var specification = new Specification<Category>();
         specification.AddCriteria(c => c.Id == request.Id);
         var guidResult  = await repository.RemoveEntityAsync(specification);
+        await repository.SaveChangesAsync();
         return guidResult is true ? ApplicationResult<Guid?>.Success(request.Id) : ApplicationResult<Guid?>.
         Failure([CategoryErrors.NotFound]);
     }

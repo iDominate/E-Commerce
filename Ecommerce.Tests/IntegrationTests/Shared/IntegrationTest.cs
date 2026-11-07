@@ -1,7 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace Ecommerce.Tests.IntegrationTests.Shared;
-
 public abstract class IntegrationTest : IClassFixture<CustomWebApplicationFactory>, IAsyncLifetime
 {
     protected readonly HttpClient _client;

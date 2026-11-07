@@ -14,7 +14,7 @@ public sealed class GetCategoryByIdEndpoint : IEndpoint
         routeBuilder.MapGet("/api/category/{id}", HandleAsync);
     }
 
-    public async Task<IResult> HandleAsync([AsParameters] GetCategoryByIdRequest request, ISender sender)
+    public async Task<IResult> HandleAsync([AsParameters] GetCategoryByIdRequest request,[FromServices] ISender sender)
     {
         var result = await sender.Send(GetCategoryByIdRequest.ToQuery(request));
         if(!result.IsSuccess)
