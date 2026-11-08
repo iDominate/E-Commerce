@@ -15,8 +15,27 @@ public sealed class UpdateCategoryCommandHandler(IRepository<Category> repositor
         {
             return ApplicationResult<Category?>.Failure([CategoryErrors.NotFound]);
         }
-        
-        result.First().UpdateValues(request.Name, request.Slug);
+        var newName = Name.Create(request.Name);
+        var newSlug = Slug.Create(request.Slug);
+        var errors = new List<Error>();
+        if(!newName.IsSuccess)
+        {
+            errors.Add(
+            new Error("Category.InvalidName",
+            "The input name is invalid", ErrorType.Validation));                 
+        }
+
+        if(!newSlug.IsSuccess)
+        {
+            errors.Add(new Error("Category.InvalidSlug",
+            "The input slug is not valid",
+            ErrorType.Validation));  
+        }
+        if(errors.Count != 0)
+        {
+            return ApplicationResult<Category?>.Failure(errors.ToArray());
+        }
+        result.First().UpdateValues(newName.Object, newSlug.Object);
         await repository.SaveChangesAsync();
         return ApplicationResult<Category?>.Success(result.First());
     }

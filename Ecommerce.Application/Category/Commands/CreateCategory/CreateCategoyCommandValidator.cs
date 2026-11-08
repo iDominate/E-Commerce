@@ -9,7 +9,14 @@ public sealed class CreateCategoryCommandValidator : AbstractValidator<CreateCat
 {
     public CreateCategoryCommandValidator(IRepository<Category> repository)
     {
-            
+            RuleFor(r => r.Name)
+            .Must(x => Name.Create(x).IsSuccess)
+            .WithState(_ => Name.InvalidName);
+
+            RuleFor(r => r.Slug)
+            .Must(x => Slug.Create(x).IsSuccess)
+            .WithState(_ => Slug.InvalidSlug);
+
             RuleFor(r => r.Name)
             .MustAsync(async (value, ct) =>
             {

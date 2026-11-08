@@ -8,13 +8,14 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        if(exception is ValidationException)
+        if(exception is AppValidationException)
         {
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
             await httpContext.Response.WriteAsJsonAsync(
-            ApiResponse<Error>.Failure(((ValidationException) exception).Errors.Select(e => new Error(
-                e.ErrorCode, e.ErrorMessage, ErrorType.Validation))));
+            ApiResponse<IEnumerable<Error>>.Failure(((AppValidationException) exception).Errors));
         } else
         {
+            httpContext.Response.StatusCode = StatusCodes.Status502BadGateway;
             await httpContext.Response.WriteAsJsonAsync(ApiResponse<string>.Failure([new Error("Unknown",
             exception.Message, ErrorType.Failure)]));
         }

@@ -18,7 +18,7 @@ public sealed class UpdateCategoryCommandHanlder : GenericRepositoryProvider<Cat
 
         //Act
         var result = await handler.Handle(new 
-        UpdateCategoryCommand(Guid.Empty, Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1"))
+        UpdateCategoryCommand(Guid.Empty, "Test 1", "test-1")
         ,this._cancellationTokenSource.Token);
 
         //Assert
@@ -33,14 +33,14 @@ public sealed class UpdateCategoryCommandHanlder : GenericRepositoryProvider<Cat
         //Arrange
         this._mockRepo.Setup(m => m.GetEntitiesAsync(It.IsAny<Specification<Category>>()))
         .ReturnsAsync(new List<Category>{
-        Category.Create(Name.FromPersistence("Test 1"),
-         Slug.FromPersistence("test-1"))});
+        Category.Create(Name.FromPersistence("Test One"),
+         Slug.FromPersistence("test-one"))});
         var handler = new UpdateCategoryCommandHandler(this._mockRepo.Object);
 
         //Act
         var result = await handler.Handle(new 
-        UpdateCategoryCommand(Guid.Empty, Name.FromPersistence("Test 1"),
-        Slug.FromPersistence("test-1"))
+        UpdateCategoryCommand(Guid.Empty, "Test One",
+        "test-one")
         ,this._cancellationTokenSource.Token);
 
         //Assert

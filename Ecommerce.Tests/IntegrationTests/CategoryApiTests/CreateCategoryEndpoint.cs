@@ -26,9 +26,9 @@ public sealed class CreateCategoryEndpoint : IntegrationTest
         var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
         response.Should().NotBeNull();
         response.Errors.Should().HaveCountGreaterThan(0);
-        response.Errors.ToList()[0].Code.Should().Be("Name.Invalid");
-        response.Errors.ToList()[1].Code.Should().Be("Slug.Invalid");
-        response.Errors.ToList()[0].ErrorType.Should().Be(ErrorType.Validation);
+        response.Errors.Should().Contain(x => x.Code == "Name.Invalid");
+        response.Errors.Should().Contain(x => x.Code == "Slug.Invalid");
+        response.Errors.Should().Contain(x => x.ErrorType == ErrorType.Validation);
         apiResult.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
 
     }
@@ -52,5 +52,28 @@ public sealed class CreateCategoryEndpoint : IntegrationTest
         existingCategory.Should().NotBeNull();
         //cleanup
         this._context.Database.EnsureDeleted(); 
+    }
+
+    [Fact]
+    public async Task CreateCategoryWithDuplicateValues_Should_ReturnError()
+    {
+        //Arrange
+        var category = CategoriesFactory.Generate(1).First();        
+        await this._context.AddAsync(category);
+        await this._context.SaveChangesAsync();
+
+
+        var request = new CreateCategoryRequest(category.Name.Value, category.Slug.Value);
+        //Act
+        var apiResult = await this._client.PostAsJsonAsync("/api/category", request);
+
+        //Assert
+        var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
+
+        apiResult.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        response!.Errors.Should().HaveCountGreaterThan(0);
+
+        //cleanup
+        this._context.Database.EnsureDeleted();
     }
 }

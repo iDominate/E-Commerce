@@ -1,7 +1,7 @@
 namespace Ecommerce.Domain.Models.Shared;
 
 
-public sealed record DomainResult<T>
+public sealed record DomainResult<T> : IDomainResult
 {
     public string Code {get;}
     public string? Message {get;} = null;

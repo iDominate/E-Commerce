@@ -1,4 +1,4 @@
 using Ecommerce.Domain.Models.Orders.Entities;
 using MediatR;
 
-public sealed record UpdateCategoryCommand(Guid Id, Name Name, Slug Slug) : IRequest<ApplicationResult<Category?>>;
+public sealed record UpdateCategoryCommand(Guid Id, string Name, string Slug) : IRequest<ApplicationResult<Category?>>;

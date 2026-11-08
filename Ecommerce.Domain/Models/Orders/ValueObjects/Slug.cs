@@ -19,6 +19,10 @@ public sealed record Slug : ValueObjet<Slug, string>
 
     public static DomainResult<Slug> Create(string value)
     {
+        if(string.IsNullOrWhiteSpace(value))
+        {
+            return InvalidSlug;
+        }
         if(!Pattern.IsMatch(value))
         {
             return InvalidSlug;

@@ -16,6 +16,10 @@ public sealed record Name : ValueObjet<Name, string>
     }
     public static DomainResult<Name> Create(string value)
     {
+        if(string.IsNullOrWhiteSpace(value))
+        {
+            return InvalidName;
+        }
         if(!Pattern.IsMatch(value))
         {
             return InvalidName;
