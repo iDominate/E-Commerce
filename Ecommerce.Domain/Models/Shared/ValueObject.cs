@@ -4,9 +4,9 @@ using Ecommerce.Domain.Models.Shared;
 /// A base class for all value objects
 /// </summary>
 /// <typeparam name="T">The uderlying type of the value object</typeparam>
-public abstract record ValueObjet<TSelf, TValue>
+public abstract record ValueObject<TSelf, TValue>
 {
-    protected ValueObjet(TValue value)
+    protected ValueObject(TValue value)
     {
         Value = value;
     }
@@ -15,5 +15,5 @@ public abstract record ValueObjet<TSelf, TValue>
     /// <summary>
     /// The underlying value
     /// </summary>
-    public TValue Value { get; private set;}
+    public TValue Value { get; init;}
 }
