@@ -1,13 +1,10 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.BrandAggregate;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Domain.Models.Product.ValueObjects.Product;
+using Ecommerce.Domain.Models.ProductAggregate.Entities;
 using Ecommerce.Domain.Models.ProductAggregate.ValueObjects.ProductObjects;
 
 namespace Ecommerce.Domain.Models.ProductAggregate;
-
-
-/// <summary>
-/// A product aggregate root
-/// </summary>
 public sealed class Product : AggregateRoot, IAuditable
 {
     public ProductName Name {get; private set;}
@@ -16,39 +13,73 @@ public sealed class Product : AggregateRoot, IAuditable
 
     public string Description {get; private set;}
 
-    public Money? Price {get; private set;}
+    public ProductPrice? Price {get; private set;}
     public int Stock { get; private set; }
     public bool IsActive { get; private set; }
-    public Category? Category {get; private set;}
-    public ProductBrand? Brand { get; set; }
-    public List<ProductImage> Images { get; private set; } = 
-    new List<ProductImage>();
-    public IProductDiscount? Discount { get; private set; }
-    public List<ProductReview> Reviews { get; private set; } =
-    new List<ProductReview>();
+    public Brand? Brand { get; set; }
+    private readonly List<ProductImage> _images = [];
+    public IReadOnlyCollection<ProductImage> Images  => 
+    _images;
+    private readonly List<Review> _reviews = [];
 
-    public List<ProductTransactionHistory> TransactionHistory { get; private set; } =
-    new List<ProductTransactionHistory>();
-    public DateTime CreatedAt { get ; set; }
+    public ProductDiscount? Discount { get; private set; }
+    public IReadOnlyCollection<Review> Reviews  => 
+    _reviews;
+    private readonly List<TransactionHistory> _transactionHistory = [];
+
+    public IReadOnlyCollection<TransactionHistory> TransactionHistory  => 
+    _transactionHistory;
+    public DateTime CreatedAt { get ; init; }
     public DateTime UpdatedAt { get; set; }
+    public Guid BrandId { get; set; }
+    public Guid CategoryId { get; set; }
+    public Category? Category { get; private set; }
 
-    private Product(
+    Product(
     ProductName name,
     ProductSlug slug,
     string description,
-    Money price,
-    Category category)
-{
+    ProductPrice price,
+    Guid brandId,
+    Guid categoryId,
+    ProductDiscount productDiscount){
     Name = name;
     Slug = slug;
     Description = description;
     Price = price;
-    Category = category;
     Stock = 0;
     IsActive = true;
+    BrandId = brandId;
+    CategoryId = categoryId;
+    this.CreatedAt = DateTime.UtcNow;
     this.UpdatedAt = DateTime.UtcNow;
+    this.Discount = productDiscount;
 }
-    public void ChangePrice(Money price)
+
+    public static Product Create(ProductName name, 
+    ProductSlug slug, 
+    string description,
+    ProductPrice price, 
+    Guid categoryId, 
+    Guid brandId, 
+    int stock, 
+    bool isActive,
+    ProductDiscount productDiscount = null!
+    )
+    {
+        return new Product(name,
+        slug,
+        description,
+        price,
+        brandId,
+        categoryId,
+        productDiscount);
+    }
+    private Product()
+    {
+        
+    }
+    public void ChangePrice(ProductPrice price)
     {
         this.Price = price;
         this.UpdatedAt = DateTime.UtcNow;
@@ -56,13 +87,13 @@ public sealed class Product : AggregateRoot, IAuditable
 
     public void AddImage(ProductImage image)
     {
-        this.Images.Add(image);
+        this._images.Add(image);
         this.UpdatedAt = DateTime.UtcNow;
     }
 
     public void RemoveImage(Guid imageId)
     {
-        this.Images.Where(i => i.Id == imageId);
+        this._images.RemoveAll(i => i.Id == imageId);
         this.UpdatedAt = DateTime.UtcNow;
     }
 
@@ -78,7 +109,7 @@ public sealed class Product : AggregateRoot, IAuditable
         this.UpdatedAt = DateTime.UtcNow;
     }
 
-    public void AssignDiscount(IProductDiscount discount)
+    public void AssignDiscount(ProductDiscount discount)
     {
         this.Discount = discount;
         this.UpdatedAt = DateTime.UtcNow;
@@ -102,9 +133,20 @@ public sealed class Product : AggregateRoot, IAuditable
         this.UpdatedAt = DateTime.UtcNow;
     }
 
-    public void AddReview(ProductReview review)
+    public void AddReview(Review review)
     {
-            this.Reviews.Add(review);
+            this._reviews.Add(review);
             this.UpdatedAt = DateTime.UtcNow;    
+    }
+    public void ChangeName(ProductName name)
+    {
+        this.Name = name;   
+        this.UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void ChangeSlug(ProductSlug slug)
+    {
+        this.Slug = slug;
+        this.UpdatedAt = DateTime.UtcNow;
     }
 }

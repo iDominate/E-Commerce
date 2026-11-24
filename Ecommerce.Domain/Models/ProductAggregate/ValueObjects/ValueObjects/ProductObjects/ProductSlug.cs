@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Ecommerce.Domain.Models.Shared;
+using OneOf;
 
 namespace Ecommerce.Domain.Models.ProductAggregate.ValueObjects.ProductObjects;
 
@@ -8,12 +9,14 @@ namespace Ecommerce.Domain.Models.ProductAggregate.ValueObjects.ProductObjects;
 /// </summary>
 public sealed record ProductSlug : ValueObject<ProductSlug, string>
 {
-    private static IDomainResult InvalidSlug = 
-    DomainResult<Error>.
-    Failure("ProductSlug.Invalid", "Invalid product slug");
+    private static IDomainResult<ProductSlug> InvalidSlug = 
+    DomainResult<ProductSlug>.
+    Failure(
+        new Error("ProductSlug.Invalid", "Invalid product slug.", ErrorType.Validation)!
+        );
     private static readonly Regex Pattern =
-        new(@"^([A-Za-z0-9]+)(\s[A-Za-z0-9]+)*$");
-    public ProductSlug(string slug) : base(slug)
+        new(@"^[\p{Ll}\p{N}-]+$");
+    public ProductSlug(string value) : base(value)
     {
     }
     /// <summary>
@@ -21,7 +24,7 @@ public sealed record ProductSlug : ValueObject<ProductSlug, string>
     /// </summary>
     /// <param name="slug">the slug</param>
     /// <returns>an <seealso cref="IDomainResult"/>/returns>
-    public static IDomainResult Create(string slug)
+    public static IDomainResult<ProductSlug> Create(string slug)
     {
         if(!Pattern.IsMatch(slug))
         {

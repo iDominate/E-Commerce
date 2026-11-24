@@ -9,8 +9,8 @@ namespace Ecommerce.Domain.Models.Product.ValueObjects.Product;
 public sealed record ProductName : ValueObject<ProductName, string>
 {
     private static readonly Regex Pattern =
-        new(@"^([A-Za-z0-9]+)(\s[A-Za-z0-9]+)*$");
-    private ProductName(string name) : base(name)
+        new(@"^([A-Z][a-z0-9\s.,+_&-]+)+$");
+    private ProductName(string value) : base(value)
     {
     }
     /// <summary>
@@ -18,12 +18,12 @@ public sealed record ProductName : ValueObject<ProductName, string>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public IDomainResult Create(string name)
+    public static IDomainResult<ProductName> Create(string name)
     {
         if(!Pattern.IsMatch(name))
         {
-            return DomainResult<Error>.
-            Failure("ProductName.Invalid", "invalid product name input");
+            return DomainResult<ProductName>.
+            Failure(new Error("ProductName.Invalid", "invalid product name input", ErrorType.Validation));
         }
         return DomainResult<ProductName>.Success(new ProductName(name));
     }

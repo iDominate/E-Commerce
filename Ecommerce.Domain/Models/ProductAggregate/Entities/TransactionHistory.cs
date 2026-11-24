@@ -1,13 +1,12 @@
 using Ecommerce.Domain.Models.Product.ValueObjects.Product;
 using Ecommerce.Domain.Models.Shared;
 
-namespace Ecommerce.Domain.Models.ProductAggregate.ValueObjects.ProductObjects;
+namespace Ecommerce.Domain.Models.ProductAggregate;
 /// <summary>
 /// A record that represents a transaction
 /// </summary>
-public sealed record ProductTransactionHistory
+public sealed class TransactionHistory : Entity
 {
-    public Guid Id { get; } = Guid.NewGuid();
 
     public Guid ProductId { get; init; }
 
@@ -18,8 +17,9 @@ public sealed record ProductTransactionHistory
     public string Reason { get; private set; }
 
     public DateTime CreatedAt { get; private set; }
+    public Product? Product { get; set; }
 
-    private ProductTransactionHistory(Guid productId,
+    private TransactionHistory(Guid productId,
     StockTransactionType type,
     string reason, 
     int quantity = 0)
@@ -37,16 +37,16 @@ public sealed record ProductTransactionHistory
     /// <param name="reason">the reason for this transaction</param>
     /// <param name="quantity">the quantity</param>
     /// <returns>An <see cref="IDomainResult"/></returns>
-    public static IDomainResult Create(Guid productId, 
+    public static IDomainResult<TransactionHistory> Create(Guid productId, 
     StockTransactionType type,
     string reason,
     int quantity)
     {
         if(string.IsNullOrEmpty(reason) || quantity <= 0)
         {
-            return DomainResult<Error>.Failure("ProductTransactionType.InvalidFormat", "Invalid format");
+            return DomainResult<TransactionHistory>.Failure(new Error("TransactionHistory.Invalid", "Invalid transaction history input", ErrorType.Validation)!);
         }
-        return DomainResult<ProductTransactionHistory>.Success(new ProductTransactionHistory(
+        return DomainResult<TransactionHistory>.Success(new TransactionHistory(
             productId, type, reason, quantity
         ));
     }
