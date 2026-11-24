@@ -1,4 +1,4 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +10,7 @@ public class CategoryConfiguration
         builder.Property(p => p.Name)
         .HasConversion(
             name => name.Value,
-            value =>  Name.FromPersistence(value)
+            value =>  CategoryName.FromPersistence(value)
         )
         .IsRequired()
         .HasMaxLength(32);
@@ -20,7 +20,15 @@ public class CategoryConfiguration
 
         builder.Property(p => p.Slug)
         .HasConversion(slug => slug.Value,
-        value =>  Slug.FromPersistence(value))
+        value =>  CategorySlug.FromPersistence(value))
         .IsRequired();
+        
+        builder.HasMany(c => c.Products)
+        .WithOne()
+        .HasForeignKey(p => p.CategoryId)
+        .HasPrincipalKey(c => c.Id);
+
+        builder.Navigation(c => c.Products)
+        .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }
