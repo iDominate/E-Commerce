@@ -1,4 +1,8 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.BrandAggregate;
+using Ecommerce.Domain.Models.CategoryAggregate;
+using Ecommerce.Domain.Models.Product.ValueObjects.Product;
+using Ecommerce.Domain.Models.ProductAggregate;
+using Ecommerce.Domain.Models.ProductAggregate.Entities;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
@@ -35,5 +39,9 @@ public class AppDbContext : DbContext
             return base.SaveChangesAsync(cancellationToken);
         
     }
-    private DbSet<Category> Categories;
+    public DbSet<Category> Categories {get; private set;}
+    public DbSet<Brand> BrandNames {get; private set;}
+    public DbSet<Product> Products {get; private set;}
+    public DbSet<TransactionHistory> Transactions {get; private set;}
+    public DbSet<ProductImage> Images {get; private set;}
 }
