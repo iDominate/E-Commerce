@@ -16,7 +16,7 @@ public static class QueryEvaluatorBuilder
     public static IQueryable<T> GetQuery<T>(
         IQueryable<T> query,
         ISpecification<T> specification
-    ) where T : AggregateRoot
+    ) where T : Entity
     {
        if(specification.Criteria is not null)
         {

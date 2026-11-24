@@ -1,9 +1,8 @@
 namespace Ecommerce.Domain.Models.Shared;
 
-public interface IDomainResult
+public interface IDomainResult<T>
 {
-    public string Code {get;}
-    public string? Message {get;}
-
-    public bool IsSuccess {get;}
+    public T? Value { get; init; }
+    public Error? Error { get; init; }
+    public bool IsSuccess {get; init;}
 }

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 /// A base class for specifications applied to a certain query
 /// </summary>
 /// <typeparam name="T"><see cref="AggregateRoot"/></typeparam>
-public interface ISpecification<T> where T : AggregateRoot
+public interface ISpecification<T> where T : Entity
 {
     /// <summary>
     /// The critera to filer entities by

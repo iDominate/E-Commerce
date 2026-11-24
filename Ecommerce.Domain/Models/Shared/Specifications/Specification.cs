@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 /// A concret generic implementation of the <see cref="ISpecification"/>
 /// </summary>
 /// <typeparam name="T">The Aggregate root</typeparam>
-public class Specification<T> : ISpecification<T> where T : AggregateRoot
+public class Specification<T> : ISpecification<T> where T : Entity
 {
     public Expression<Func<T, bool>>? Criteria {get; protected set;}
 

@@ -1,28 +1,24 @@
 namespace Ecommerce.Domain.Models.Shared;
 
 
-public sealed record DomainResult<T> : IDomainResult
+public sealed class DomainResult<T> : IDomainResult<T>
 {
-    public string Code {get;}
-    public string? Message {get;} = null;
-    public T Object {get; }
-    public bool IsSuccess {get;}
+    public T? Value {get; init;}
+    public bool IsSuccess {get; init;}
 
-    private DomainResult(T domainObject = default(T)!,
-    string code = "Success",
-    string? message = null,
-    bool isSuccess = true
-    )
+    public Error? Error {get; init;}
+    private DomainResult(T? domainObject = default, bool isSuccess = true,  Error? error = null)
     {
-        this.IsSuccess = isSuccess;
-        this.Message = message;
-        this.Code = code;
-        this.Object = domainObject;   
+        Error = error;
+        IsSuccess = isSuccess;
+        Value = domainObject;
     }
+
+    
     public static DomainResult<T> Success(T domainObject) => new DomainResult<T>(domainObject);
 
     public static DomainResult<T> Failure
-    (string code, string message) => new(isSuccess: false ,
-    code: code, message: message);
+    (Error error) => new DomainResult<T>(default!, false, error
+    );
 
 }
