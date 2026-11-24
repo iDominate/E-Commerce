@@ -1,8 +1,5 @@
-using Ecommerce.Application.Repositories.Contracts;
-using Ecommerce.Domain.Models.Orders.Entities;
-using Microsoft.EntityFrameworkCore;
+using Ecommerce.Domain.Models.CategoryAggregate;
 
-public class CategoryRepository(DbSet<Category> dbSet, AppDbContext appDb)
- : Repository<Category>(appDb)
-{
-}
+namespace Ecommerce.Infrastructure.BasicImplementation;
+public class CategoryRepository(AppDbContext appDb)
+ : Repository<Category>(appDb);

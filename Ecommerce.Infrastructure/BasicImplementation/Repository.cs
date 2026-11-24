@@ -5,7 +5,8 @@ using Microsoft.EntityFrameworkCore;
 /// A generic implmentation for <see cref="IRepository<T>"/>
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class Repository<T> : Ecommerce.Application.Repositories.Contracts.IRepository<T> where T : AggregateRoot
+public class Repository<T> : Ecommerce.Application.Repositories.Contracts.IRepository<T>
+where T : Entity
 {
     private DbSet<T> _dbSet;
     private AppDbContext _dbContext;
