@@ -3,7 +3,7 @@ namespace Ecommerce.Application.Repositories.Contracts;
 /// A generic repository
 /// </summary>
 /// <typeparam name="T">The base type which implements <see cref="AggregateRoot"/></typeparam>
-public interface IRepository<T> where T : AggregateRoot
+public interface IRepository<T> where T : Entity
 {
     /// <summary>
     /// Persist an instance of the entity
