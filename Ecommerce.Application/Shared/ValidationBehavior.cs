@@ -29,15 +29,8 @@ where TResponse : IApplicationResult
             .Where(f => f is not null)
             .Select(f =>
             {
-                if(f.CustomState is IDomainResult)
-                {
-                var state = (IDomainResult) f.CustomState;
-                return new Error(
-                    state.Code,
-                    state.Message!,
-                    ErrorType.Validation);
-                }
-                return new Error(f.ErrorCode, f.ErrorMessage, ErrorType.Failure);
+                
+            return new Error(f.ErrorCode, f.ErrorMessage, ErrorType.Validation);
             })
             .ToList();
         
