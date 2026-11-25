@@ -1,4 +1,6 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Commands.CreateCategory;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Moq;
@@ -11,8 +13,8 @@ public sealed class CreateCategoriesCommandTest : GenericRepositoryProvider<Cate
     public async Task CreateCategoriesCommand_Should_ReturnANewEntity()
     {
         //Arrange
-        var category = Category.Create(Name.FromPersistence("Test One"),
-        Slug.FromPersistence("test-one"));
+        var category = Category.Create(CategoryName.FromPersistence("Test One"),
+        CategorySlug.FromPersistence("test-one"));
         this._mockRepo.Setup(m => m.CreateAsync(It.IsAny<Category>()))
         .ReturnsAsync(category);
         var handler = new CreateCategoryCommandHandler(this._mockRepo.Object);
@@ -22,7 +24,7 @@ public sealed class CreateCategoriesCommandTest : GenericRepositoryProvider<Cate
          this._cancellationTokenSource.Token);
 
         //Assert
-        result.Value.Should().NotBeNull().And.BeOfType<Category>();
-        result.Value.Id.Should().Be(category.Id);
+        ((ApplicationResult<CategoryDto>)result).Value.Should().NotBeNull().And.BeOfType<CategoryDto>();
+        ((ApplicationResult<CategoryDto>)result).Value!.Id.Should().Be(category.Id);
     }
 }

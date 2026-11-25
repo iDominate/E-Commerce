@@ -1,4 +1,6 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Queries.GetAllCategories;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -15,16 +17,16 @@ public sealed class GetAllCategoriesQueryTest : GenericRepositoryProvider<Catego
     {
         //Arrange
         this._mockRepo.Setup(m => m.GetEntitiesAsync(It.IsAny<ISpecification<Category>>()))
-        .ReturnsAsync(new List<Category>());
+        .Returns(Task.FromResult<IEnumerable<Category>>(new List<Category>()));
 
-        var handler = new GetAllCategoriesCommandHandler(
+        var handler = new GetAllCategoriesQueryHandler(
             this._mockRepo.Object);
 
         //Act
         var result = await handler.
-        Handle(new GetAllCategoriesCommand(), this._cancellationTokenSource.Token);
+        Handle(new GetAllCategoriesQuery(), this._cancellationTokenSource.Token);
 
         //Assert
-        result.Value.Should().BeOfType<List<Category>>().And.NotBeNull();        
+        ((ApplicationResult<IEnumerable<CategoryDto>>)result).Value.Should().NotBeNull();        
     }    
 }

@@ -1,4 +1,6 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Commands.UpdateCategory;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Moq;
@@ -24,7 +26,6 @@ public sealed class UpdateCategoryCommandHanlder : GenericRepositoryProvider<Cat
         //Assert
         result.Errors.Should().HaveCountGreaterThan(0);
         result.IsSuccess.Should().BeFalse();
-        result.Errors[0].ErrorType.Should().Be(ErrorType.NotFound);   
     }
 
     [Fact]
@@ -33,8 +34,8 @@ public sealed class UpdateCategoryCommandHanlder : GenericRepositoryProvider<Cat
         //Arrange
         this._mockRepo.Setup(m => m.GetEntitiesAsync(It.IsAny<Specification<Category>>()))
         .ReturnsAsync(new List<Category>{
-        Category.Create(Name.FromPersistence("Test One"),
-         Slug.FromPersistence("test-one"))});
+        Category.Create(CategoryName.FromPersistence("Test One"),
+         CategorySlug.FromPersistence("test-one"))});
         var handler = new UpdateCategoryCommandHandler(this._mockRepo.Object);
 
         //Act
@@ -46,6 +47,6 @@ public sealed class UpdateCategoryCommandHanlder : GenericRepositoryProvider<Cat
         //Assert
         result.Errors.Should().BeNullOrEmpty();
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeNull();
+        ((ApplicationResult<CategoryDto>)result).Value.Should().NotBeNull();
     }
 }

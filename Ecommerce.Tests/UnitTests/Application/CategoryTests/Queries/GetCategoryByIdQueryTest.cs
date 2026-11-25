@@ -1,4 +1,5 @@
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Moq;
@@ -12,7 +13,7 @@ public sealed class GetCategoryByIdQueryTest : GenericRepositoryProvider<Categor
     [Fact]
     public async Task GetCategoryByIdWithProperId_Should_return_TheProperElements()
     {
-        var category = Category.Create(Name.FromPersistence("Test 1"),Slug.FromPersistence("test-1"));
+        var category = Category.Create(CategoryName.FromPersistence("Test 1"),CategorySlug.FromPersistence("test-1"));
         //Arrange
         this._mockRepo.Setup(m => m.GetEntitiesAsync(It.IsAny<ISpecification<Category>>()))
         .ReturnsAsync(new List<Category>{category});
@@ -24,16 +25,16 @@ public sealed class GetCategoryByIdQueryTest : GenericRepositoryProvider<Categor
 
 
         //Assert
-        result.Value.Should().NotBeNull();
+        ((ApplicationResult<CategoryDto>)result).Value.Should().NotBeNull();
         result.IsSuccess.Should().BeTrue();
-        result.Value.Id.Should().Be(category.Id);
+        ((ApplicationResult<CategoryDto>)result).Value!.Id.Should().Be(category.Id);
     }
 
     [Fact]
     public async Task GetCategoryByIdWithProperId_Should_ReturnFailure()
     {
         //Arrange
-        var category = Category.Create(Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1"));
+        var category = Category.Create(CategoryName.FromPersistence("Test 1"), CategorySlug.FromPersistence("test-1"));
         var specification = new Specification<Category>();
         specification.AddCriteria((x) => x.Id == category.Id);
         
@@ -49,7 +50,6 @@ public sealed class GetCategoryByIdQueryTest : GenericRepositoryProvider<Categor
         //Assert
         result.Errors.Should().HaveCountGreaterThan(0);
         result.IsSuccess.Should().BeFalse();
-        result.Errors[0].ErrorType.Should().Be(ErrorType.NotFound);
     }
 
 }

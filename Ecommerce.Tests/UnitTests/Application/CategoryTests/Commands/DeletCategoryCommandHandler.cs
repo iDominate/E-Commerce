@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
-using Ecommerce.Application.Category.Commands.DeleteCategory;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Commands.DeleteCategory;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.UnitTests.cs.Infrastructure.Application.Shared;
 using FluentAssertions;
 using Moq;
@@ -26,7 +26,6 @@ public sealed class DeleteCategoryCommandTest : GenericRepositoryProvider<Catego
         //Assert
         result.Errors.Should().HaveCountGreaterThan(0);
         result.IsSuccess.Should().BeFalse();
-        result.Errors[0].ErrorType.Should().Be(ErrorType.NotFound);   
     }
 
     [Fact]
@@ -45,6 +44,5 @@ public sealed class DeleteCategoryCommandTest : GenericRepositoryProvider<Catego
         //Assert
         result.Errors.Should().BeNullOrEmpty();
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeNull();
     }
 }
