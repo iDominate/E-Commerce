@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
-using Ecommerce.Api.Endpoints.CategoryEndpoints.Dtos;
 using Ecommerce.Api.Endpoints.Shared;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Application.CategoryCQRS.Queries.GetAllCategories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +14,10 @@ public class GetAllCategories : IEndpoint
     }
     public async Task<IResult>  HandleAsync([FromServices] ISender sender)
     {
-       var result = await sender.Send(new GetAllCategoriesCommand());
-       var response = ApiResponse<IEnumerable<CategoryResponseDto>>.
+       var result = await sender.Send(new GetAllCategoriesQuery());
+       var response = ApiResponse<IEnumerable<CategoryDto>>.
        Successful(
-        CategoryResponseDto.ToMultipleObjectsResponse(result!.Value!)
-        );
+        ((ApplicationResult<IEnumerable<CategoryDto>>)result)!.Value!);
         return Results.Ok(response);
     }
 }

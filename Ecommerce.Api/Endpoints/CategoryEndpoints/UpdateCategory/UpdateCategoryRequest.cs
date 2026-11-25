@@ -1,3 +1,5 @@
+using Ecommerce.Application.CategoryCQRS.Commands.UpdateCategory;
+
 namespace Ecommerce.Api.Endpoints.UpdateCategory;
 
 

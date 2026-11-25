@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,9 @@ public sealed class GetCategoryByIdEndpoint : IEndpoint
         var result = await sender.Send(GetCategoryByIdRequest.ToQuery(request));
         if(!result.IsSuccess)
         {
-            return Results.BadRequest(ApiResponse<Category>.Failure(result.Errors));
+            return Results.BadRequest(ApiResponse<Error>.Failure(result.Errors!));
         }
-        return Results.Ok(ApiResponse<Category>.Successful(result.Value!));
+        return Results.Ok(ApiResponse<CategoryDto>.Successful(((ApplicationResult<CategoryDto>)result).Value!));
 
     }
 }

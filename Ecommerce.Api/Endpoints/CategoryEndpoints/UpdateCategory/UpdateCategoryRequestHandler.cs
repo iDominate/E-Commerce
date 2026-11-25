@@ -1,9 +1,10 @@
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Api.Endpoints.UpdateCategory;
+using Ecommerce.Application.CategoryCQRS.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Ecommerce.Api.Endpoints.UpdateCategory;
+namespace Ecommerce.Api.Endpoints.CategoryEndpoints.UpdateCategory;
 
 public sealed class UpdateCategoryRequestEndpoint : IEndpoint
 {
@@ -20,9 +21,10 @@ public sealed class UpdateCategoryRequestEndpoint : IEndpoint
 
         if(!result.IsSuccess)
         {
-            return Results.BadRequest(ApiResponse<Error>.Failure(result.Errors));
+            return Results.BadRequest(ApiResponse<Error>.Failure(result.Errors!));
         }
 
-        return Results.Ok(ApiResponse<Category>.Successful(result.Value!));
+        return Results.Ok(ApiResponse<CategoryDto>.
+        Successful(((ApplicationResult<CategoryDto>)result).Value!));
     }
 }

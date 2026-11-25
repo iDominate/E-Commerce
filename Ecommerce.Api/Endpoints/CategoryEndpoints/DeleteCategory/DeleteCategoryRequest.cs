@@ -1,4 +1,4 @@
-using Ecommerce.Application.Category.Commands.DeleteCategory;
+using Ecommerce.Application.CategoryCQRS.Commands.DeleteCategory;
 
 namespace Ecommerce.Api.Endpoints.CategoryEndpoints.DeleteCategory;
 

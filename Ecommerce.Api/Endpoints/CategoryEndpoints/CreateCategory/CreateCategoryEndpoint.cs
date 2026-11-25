@@ -1,9 +1,6 @@
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
-using FluentValidation;
+using Ecommerce.Application.CategoryCQRS.Dtos;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Api.Endpoints.CategoryEndpoints;
 
@@ -21,10 +18,10 @@ public sealed class CreateCategoryEndpoint : IEndpoint
 
         if(!result.IsSuccess)
         {
-            return Results.BadRequest(ApiResponse<IEnumerable<Error>>.Failure(result.Errors));
+            return Results.BadRequest(ApiResponse<IEnumerable<Error>>.Failure(result.Errors!));
         }
-        var response = ApiResponse<Category>.Successful(result.Value!);
-        return Results.Created($"/api/categories/{result.Value!.Id}", response);
+        var response = ApiResponse<CategoryDto>.Successful(((ApplicationResult<CategoryDto>)result).Value!);
+        return Results.Created($"/api/category/{((ApplicationResult<CategoryDto>)result).Value!.Id}", response);
 
     }
 }

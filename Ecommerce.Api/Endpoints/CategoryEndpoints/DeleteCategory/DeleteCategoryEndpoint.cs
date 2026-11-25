@@ -19,7 +19,7 @@ public sealed class DeleteCategoryEndpoint : IEndpoint
         if(!result.IsSuccess)
         {
             return Results.BadRequest(ApiResponse<IEnumerable<Error>>.Failure(
-                result.Errors));
+                result.Errors!));
         }
         return Results.NoContent();
     }
