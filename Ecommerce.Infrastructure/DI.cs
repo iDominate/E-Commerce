@@ -1,4 +1,6 @@
+using Ecommerce.Application.Abstractions;
 using Ecommerce.Application.Repositories.Contracts;
+using Ecommerce.Infrastructure.Services.Caching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,8 @@ public static class DI
             connectionString
         ));
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddMemoryCache();
+        services.AddScoped<ICacheService, MemoryCacheService>();
         return services;
     }
 
@@ -19,6 +23,8 @@ public static class DI
     {
         services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase("tests"));
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddMemoryCache();
+        services.AddScoped<ICacheService, MemoryCacheService>();
         return services;
     }
 }
