@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Ecommerce.Api.Endpoints.Shared;
 using Ecommerce.Api.Endpoints.UpdateCategory;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.IntegrationTests.Shared;
 using FluentAssertions;
 
@@ -28,8 +28,9 @@ public sealed class UpdateCategoryEndpoint : IntegrationTest
         var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
         response.Should().NotBeNull();
         response.Errors.Should().HaveCountGreaterThan(0);
-        response.Errors.Should().Contain(x => x.Code == "Name.Invalid");
-        response.Errors.Should().Contain(x => x.Code == "Slug.Invalid");
+        response.Errors.Should().Contain(x => x.Code == "Category.InvalidName");
+        response.Errors.Should().Contain(x => x.Code == "Category.InvalidSlug");
+        response.Errors.Should().Contain(x => x.Code == "Category.NotFound");
         response.Errors.Should().Contain(x => x.ErrorType == ErrorType.Validation);
         apiResult.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
 
@@ -61,9 +62,9 @@ public sealed class UpdateCategoryEndpoint : IntegrationTest
     {
         //Arrange
         var category = CategoriesFactory.Generate(1).First();
-        category.UpdateValues(Name.
+        category.UpdateValues(CategoryName.
         FromPersistence(category.Name.Value.Replace("&", "and")),
-        Slug.FromPersistence(category.Slug.Value.Replace("&", "and")));        
+        CategorySlug.FromPersistence(category.Slug.Value.Replace("&", "and")));        
         await this._context.AddAsync(category);
         await this._context.SaveChangesAsync();
 

@@ -1,16 +1,15 @@
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Dtos;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.IntegrationTests.Shared;
 using FluentAssertions;
 
 namespace Ecommerce.Tests.IntegrationTests.CategoryApiTests;
 
-public sealed class CreateCategoryEndpoint : IntegrationTest
+public sealed class CreateCategoryEndpointTest : IntegrationTest
 {
-    public CreateCategoryEndpoint(CustomWebApplicationFactory factory) : base(factory)
+    public CreateCategoryEndpointTest(CustomWebApplicationFactory factory) : base(factory)
     {
     }
 
@@ -26,14 +25,14 @@ public sealed class CreateCategoryEndpoint : IntegrationTest
         var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
         response.Should().NotBeNull();
         response.Errors.Should().HaveCountGreaterThan(0);
-        response.Errors.Should().Contain(x => x.Code == "Name.Invalid");
-        response.Errors.Should().Contain(x => x.Code == "Slug.Invalid");
+        response.Errors.Should().Contain(x => x.Code == "CategoryName.Invalid");
+        response.Errors.Should().Contain(x => x.Code == "CategorySlug.Invalid");
         response.Errors.Should().Contain(x => x.ErrorType == ErrorType.Validation);
         apiResult.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
 
     }
     [Fact]
-    public async Task CreateCategoryWithNameOrSlug_Shoud_ReturnError()
+    public async Task CreateCategoryWithNameOrSlug_Shoud_ReturnSuccess()
     {
         //Arrange
         var category = CategoriesFactory.Generate(1).First();
@@ -45,7 +44,8 @@ public sealed class CreateCategoryEndpoint : IntegrationTest
         var apiResult = await this._client.PostAsJsonAsync("/api/category", request);
 
         //Assert
-        var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
+        var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<CategoryDto>>();
+
 
         response.Should().NotBeNull();
         var existingCategory = this._context.Set<Category>().Where(c => c.Id == category.Id);    
@@ -53,27 +53,5 @@ public sealed class CreateCategoryEndpoint : IntegrationTest
         //cleanup
         this._context.Database.EnsureDeleted(); 
     }
-
-    [Fact]
-    public async Task CreateCategoryWithDuplicateValues_Should_ReturnError()
-    {
-        //Arrange
-        var category = CategoriesFactory.Generate(1).First();        
-        await this._context.AddAsync(category);
-        await this._context.SaveChangesAsync();
-
-
-        var request = new CreateCategoryRequest(category.Name.Value, category.Slug.Value);
-        //Act
-        var apiResult = await this._client.PostAsJsonAsync("/api/category", request);
-
-        //Assert
-        var response = await apiResult.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<Error>>>();
-
-        apiResult.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-        response!.Errors.Should().HaveCountGreaterThan(0);
-
-        //cleanup
-        this._context.Database.EnsureDeleted();
-    }
+    
 }

@@ -1,19 +1,17 @@
 using System.Net.Http.Json;
 using Bogus;
-using Ecommerce.Api.Endpoints.CategoryEndpoints.Dtos;
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Application.CategoryCQRS.Dtos;
 using Ecommerce.Tests.IntegrationTests.Shared;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Tests.IntegrationTests.CategoryApiTests;
 
 
-public sealed class GetAllCategorEndpoint : IntegrationTest
+public sealed class GetAllCategoriesEndpoint : IntegrationTest
 {
-    public GetAllCategorEndpoint(CustomWebApplicationFactory factory) : base(factory)
+    public GetAllCategoriesEndpoint(CustomWebApplicationFactory factory) : base(factory)
     {    
     }
 
@@ -24,7 +22,7 @@ public sealed class GetAllCategorEndpoint : IntegrationTest
         var categories = CategoriesFactory.Generate();
         this._context.AddRange(categories);
         this._context.SaveChanges();
-        
+
         //Act
         var result = await _client.GetAsync("/api/category/");
 
@@ -32,10 +30,12 @@ public sealed class GetAllCategorEndpoint : IntegrationTest
         //Assert
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         var objects = await result.Content.
-        ReadFromJsonAsync<ApiResponse<IEnumerable<CategoryResponseDto>>>();
+        ReadFromJsonAsync<ApiResponse<IEnumerable<CategoryDto>>>();
         objects.Should().NotBeNull();
         objects.Data!.ToList().Should().HaveCount(10);
 
         //Cleanup
+        this._context.RemoveRange(categories);
+        this._context.SaveChanges();
     }
 }

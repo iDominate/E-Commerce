@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using Ecommerce.Api.Endpoints.Shared;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Tests.IntegrationTests.Shared;
 using FluentAssertions;
 
