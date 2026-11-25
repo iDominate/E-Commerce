@@ -1,4 +1,3 @@
-using Ecommerce.Domain.Models.Shared;
 using FluentAssertions;
 
 namespace Ecommerce.Tests.UnitTests.cs.Domain.Category;
@@ -14,13 +13,12 @@ public sealed class NameTest
     {
         //Arrange
         //Act
-        var result = Name.Create(name);
+        var result = CategoryName.Create(name);
 
         //Assert
-        result.Code.Should().NotBe("Success");
-        result.Code.Should().Be("Name.Invalid");
-        result.Message.Should().NotBeNullOrEmpty();
-        result.Object.Should().BeNull();
+        result.Error.Should().NotBeNull();
+        result.Error.Code.Should().Be("CategoryName.Invalid");
+        result.Value.Should().BeNull();
     }
     [Theory]
     [InlineData("Test")]
@@ -29,14 +27,13 @@ public sealed class NameTest
     {
         //Arrange
         //Act
-        var result = Name.Create(name);
+        var result = CategoryName.Create(name);
 
         //Assert
-        result.Code.Should().Be("Success");
-        result.Message.Should().BeNullOrEmpty();
-        result.Object.Should().NotBeNull();
-        result.Object.Should().BeOfType<Name>();
-        
+        result.Error.Should().BeNull();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<CategoryName>();
+        result.Value!.Value.Should().Be(name);
     }
 
     

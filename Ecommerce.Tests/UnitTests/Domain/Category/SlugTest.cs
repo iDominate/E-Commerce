@@ -1,4 +1,5 @@
 
+using Ecommerce.Domain.Models.CategoryAggregate;
 using Ecommerce.Domain.Models.Shared;
 using FluentAssertions;
 
@@ -11,34 +12,32 @@ public sealed class SlugTest
     [InlineData("Test Test")]
     [InlineData("test test")]
     [InlineData("Test-Test")]
-    public void InvalidName_Should_ReturnFailure(string slug)
+    public void InvalidSlug_Should_ReturnFailure(string slug)
     {
         //Arrange
         //Act
-        var result = Slug.Create(slug);
+        var result = CategorySlug.Create(slug);
 
         //Assert
-        result.Code.Should().NotBe("Success");
-        result.Code.Should().Be("Slug.Invalid");
-        result.Message.Should().NotBeNullOrEmpty();
-        result.Object.Should().BeNull();
+        result.Error.Should().NotBeNull();
+        result.Error.Code.Should().Be(CategorySlug.InvalidSlug.Error!.Code);
+        result.Value.Should().BeNull();
     }
     [Theory]
     [InlineData("test")]
     [InlineData("test-hello")]
-    public void ValidName_Should_ReturnSuccess(string slug)
+    public void ValidSlug_Should_ReturnSuccess(string slug)
     {
         //Arrange
         //Act
-        var result = Slug.Create(slug);
+        var result = CategorySlug.Create(slug);
 
         System.Console.WriteLine(result);
         //Assert
-        result.Code.Should().Be("Success");
-        result.Message.Should().BeNullOrEmpty();
-        result.Object.Should().NotBeNull();
-        result.Object.Should().BeOfType<Slug>();
-        
+        result.Error.Should().BeNull();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().BeOfType<CategorySlug>();
+        result.Value!.Value.Should().Be(slug);
     }
 
     
