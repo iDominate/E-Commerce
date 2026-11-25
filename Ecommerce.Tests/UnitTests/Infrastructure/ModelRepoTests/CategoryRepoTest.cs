@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Ecommerce.Domain.Models.Orders.Entities;
+using Ecommerce.Domain.Models.CategoryAggregate;
 using FluentAssertions;
 using Moq;
 
@@ -9,7 +9,7 @@ public class CategoryRepoTest : GenericRepoTest<Category>
    public async Task AddAsync_Should_InsertANewCategory()
     {
         //Arrange
-        Category category = Category.Create(Name.FromPersistence("Test One"), Slug.FromPersistence("test-one"));
+        Category category = Category.Create(CategoryName.FromPersistence("Test One"), CategorySlug.FromPersistence("test-one"));
         //Act
         var result = await _repo.CreateAsync(category);
         //Assert
@@ -22,7 +22,7 @@ public class CategoryRepoTest : GenericRepoTest<Category>
     {
         //Arrange
         var categories = new List<Category>{
-            Category.Create(Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1"))
+            Category.Create(CategoryName.FromPersistence("Test 1"), CategorySlug.FromPersistence("test-1"))
         };
         ISpecification<Category> specification = new Specification<Category>();
         specification.AddCriteria((x) => x.Id == categories[0].Id);
@@ -43,9 +43,9 @@ public class CategoryRepoTest : GenericRepoTest<Category>
     {
         //Arrange
         var categories = new List<Category>{
-            Category.Create(Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1")),
-            Category.Create(Name.FromPersistence("Test 2"), Slug.FromPersistence("test-2")),
-            Category.Create(Name.FromPersistence("Test 3"), Slug.FromPersistence("test-3"))
+            Category.Create(CategoryName.FromPersistence("Test 1"), CategorySlug.FromPersistence("test-1")),
+            Category.Create(CategoryName.FromPersistence("Test 2"), CategorySlug.FromPersistence("test-2")),
+            Category.Create(CategoryName.FromPersistence("Test 3"), CategorySlug.FromPersistence("test-3"))
         };
         ISpecification<Category> specification = new Specification<Category>();
         specification.AddOrderBy((x) => x.Name.Value);
@@ -66,9 +66,9 @@ public class CategoryRepoTest : GenericRepoTest<Category>
     {
         //Arrange
         var categories = new List<Category>{
-            Category.Create(Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1")),
-            Category.Create(Name.FromPersistence("Test 2"), Slug.FromPersistence("test-2")),
-            Category.Create(Name.FromPersistence("Test 3"), Slug.FromPersistence("test-3"))
+            Category.Create(CategoryName.FromPersistence("Test 1"), CategorySlug.FromPersistence("test-1")),
+            Category.Create(CategoryName.FromPersistence("Test 2"), CategorySlug.FromPersistence("test-2")),
+            Category.Create(CategoryName.FromPersistence("Test 3"), CategorySlug.FromPersistence("test-3"))
         };
         ISpecification<Category> specification = new Specification<Category>();
         specification.AddOrderByDescending((x) => x.Name.Value);
@@ -90,9 +90,9 @@ public class CategoryRepoTest : GenericRepoTest<Category>
     {
         //Arrange
         var categories = new List<Category>{
-            Category.Create(Name.FromPersistence("Test 1"), Slug.FromPersistence("test-1")),
-            Category.Create(Name.FromPersistence("Test 2"), Slug.FromPersistence("test-2")),
-            Category.Create(Name.FromPersistence("Test 3"), Slug.FromPersistence("test-3"))
+            Category.Create(CategoryName.FromPersistence("Test 1"), CategorySlug.FromPersistence("test-1")),
+            Category.Create(CategoryName.FromPersistence("Test 2"), CategorySlug.FromPersistence("test-2")),
+            Category.Create(CategoryName.FromPersistence("Test 3"), CategorySlug.FromPersistence("test-3"))
         };
         ISpecification<Category> specification = new Specification<Category>();
         specification.ApplyPagination(1, 2);
