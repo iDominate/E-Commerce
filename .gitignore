@@ -19,7 +19,7 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 # Visual Studio files
-vs/
+.vs/
 vscode/
 .vscode/
 !.vscode/settings.json
