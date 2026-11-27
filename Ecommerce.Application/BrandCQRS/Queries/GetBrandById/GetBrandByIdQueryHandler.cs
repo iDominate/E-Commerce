@@ -19,7 +19,7 @@ public sealed class GetBrandByIdQueryHandler : IRequestHandler<GetBrandByIdQuery
         var spec = new Specification<Brand>();
         spec.AddCriteria(b => b.Id == request.BrandId);
         var brands = await _brandRepository.GetEntitiesAsync(spec);
-        var result = BrandDto.ToDtoList(brands);
-        return ApplicationResult<IEnumerable<BrandDto>>.Success(result);
+        var result = BrandDto.ToDto(brands.First());
+        return ApplicationResult<BrandDto>.Success(result);
     }
 }
