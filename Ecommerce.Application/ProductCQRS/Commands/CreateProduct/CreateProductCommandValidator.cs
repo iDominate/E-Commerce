@@ -44,7 +44,7 @@ public sealed class CreateProductCommandValidator : AbstractValidator<CreateProd
             if (result is null || !result.Any())
             {
                 ct.AddFailure(new FluentValidation.Results.ValidationFailure("CategoryId",
-                 "Category not found"){ ErrorCode = "Product.CategoryId" });
+                 "Category not found"){ ErrorCode = "Category.NotFound" });
             }
         });
 
@@ -57,7 +57,7 @@ public sealed class CreateProductCommandValidator : AbstractValidator<CreateProd
             if (result is null || !result.Any())
             {
                 ct.AddFailure(new FluentValidation.Results.ValidationFailure("BrandId",
-                 "Brand not found"){ ErrorCode = "Product.BrandId" });
+                 "Brand not found"){ ErrorCode = "Brand.NotFound" });
             }
         });
     }

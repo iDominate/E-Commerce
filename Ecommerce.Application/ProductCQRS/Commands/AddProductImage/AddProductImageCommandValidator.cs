@@ -6,6 +6,14 @@ namespace Ecommerce.Application.ProductCQRS.Commands.AddProductImage;
 
 public sealed class AddProductImageCommandValidator : AbstractValidator<AddProductImageCommand>
 {
+    private static readonly string[] AllowedTypes =
+    {
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    };
+
+    private const long MaxFileSize = 5 * 1024 * 1024; // 5 MB
     public AddProductImageCommandValidator(IRepository<Product> repository)
     {
         RuleFor(c => c.ProductId)
@@ -22,7 +30,19 @@ public sealed class AddProductImageCommandValidator : AbstractValidator<AddProdu
         });
 
         RuleFor(c => c.ImageName)
-        .NotNull()
-        .NotEmpty(); 
+        .NotEmpty()
+        .WithErrorCode("Product.InvalidImageName")
+        .WithMessage("Image name cannot be empty");
+
+        RuleFor(c => c.FileType)
+        .NotEmpty()
+        .Must(ft => AllowedTypes.Contains(ft))
+        .WithErrorCode("Product.InvalidFileType")
+        .WithMessage("Invalid file type");
+
+        RuleFor(c => c.File.Length)
+        .LessThanOrEqualTo(MaxFileSize)
+        .WithErrorCode("Product.FileTooLarge")
+        .WithMessage("File size exceeds the maximum limit");
     }
 }

@@ -29,7 +29,7 @@ public sealed class IncreaseProductStockCommandValidator
             if (v <= 0)
             {
                 ct.AddFailure(new FluentValidation.Results.ValidationFailure("IncreaseBy",
-                 "Increase value must be greater than zero"){ ErrorCode = "IncreaseBy.Invalid" });
+                 "Invalid stock increase"){ ErrorCode = "Product.InvalidStock" });
             }
         });
     }    

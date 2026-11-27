@@ -3,6 +3,7 @@ using Ecommerce.Application.Abstractions;
 using Ecommerce.Application.Repositories.Contracts;
 using Ecommerce.Domain.Models.ProductAggregate;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace Ecommerce.Application.ProductCQRS.Commands.RemoveProductImage;
 
@@ -12,22 +13,28 @@ public sealed class RemoveProductImageCommandValidator : AbstractValidator<Remov
      IImageDatabaseStorageService service)
     {
         RuleFor(c => c.ProductId)
-        .MustAsync(async (v, ct) =>
+        .Custom(async (v, ct) =>
         {
             var spec = new Specification<Product>();
+            spec.AddCriteria(p => p.Id == v);
             var products = await repository.GetEntitiesAsync(spec);
-            return products is not null;
-        })
-        .WithErrorCode("Product.NotFound")
-        .WithMessage("no such product");
+            if (products.FirstOrDefault(p => p.Id == v) is null)
+            {
+                ct.AddFailure(new ValidationFailure("ProductId", "no such product") { ErrorCode = "Product.NotFound" });
+            }
+        });
 
         RuleFor(c => c)
-        .MustAsync(async (v, ct) =>
+        .Custom(async (v, ct) =>
         {
+            var spec = new Specification<Product>();
+            spec.AddCriteria(p => p.Id == v.ProductId);
             var result = await service.GetImagesAsync(v.ProductId);
-            return result.FirstOrDefault(i => i.ImageName == v.ImageName) is not null;
-        })
-        .WithErrorCode("Product.ImageNotFound")
-        .WithMessage("no such image");
+            if (result.FirstOrDefault(i => i.Id == v.ImageId) is null)
+            {
+                ct.AddFailure(new ValidationFailure("ImageId", "no such image") { ErrorCode = "ProductImage.NotFound" });
+            }
+        });
+
     }
 }

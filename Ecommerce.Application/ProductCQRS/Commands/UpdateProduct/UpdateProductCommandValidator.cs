@@ -29,8 +29,8 @@ public sealed class UpdateProductCommandValidator : AbstractValidator<UpdateProd
         RuleFor(c => c.Price)
         .Must(v => ProductPrice.Create(v.GetValueOrDefault(), CurrenyEnum.USD).IsSuccess == true)
         .When(c => c.Price is not null)
-        .WithErrorCode("Product.Price")
-        .WithMessage("price is not valid");
+        .WithErrorCode("Product.InvalidPrice")
+        .WithMessage("invalid price");
 
         RuleFor(c => c.CategoryId)
         .Custom(async (v, ct) =>

@@ -18,7 +18,7 @@ IRequestHandler<RemoveProductImageCommand, IApplicationResult>
 
     public async Task<IApplicationResult> Handle(RemoveProductImageCommand request, CancellationToken cancellationToken)
     {
-        await _service.RemoveImageAsync(request.ProductId, request.ImageName);
+        await _service.RemoveImageAsync(request.ProductId, request.ImageId);
         return ApplicationResult<object?>.Success(null);     
     }
 }
