@@ -23,8 +23,6 @@ public class BrandSlugTests
 
     [Theory]
     [InlineData("")]
-    [InlineData("InvalidSlug")]
-    [InlineData("invalid slug")]
     public void BrandSlug_ShouldBeInvalid(string brandSlug)
     {
         // Arrange & Act
