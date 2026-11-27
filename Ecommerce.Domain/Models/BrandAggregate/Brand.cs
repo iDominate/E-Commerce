@@ -8,22 +8,27 @@ public sealed class Brand : AggregateRoot
     public BrandSlug Slug { get; private set; }
     
     public ICollection<ProductAggregate.Product> Products { get; private set; } = [];
-    private Brand(BrandName name, BrandSlug slug)
+    private Brand(BrandName name)
     {
         Name = name;
-        Slug = slug;
+        Slug = BrandSlug.Create(name.Value).Value!;
     }
-    private Brand(BrandName name, BrandSlug slug, IEnumerable<ProductAggregate.Product>? products = default)
+    private Brand(BrandName name, IEnumerable<ProductAggregate.Product>? products = default)
     {
         Name = name;
-        Slug = slug;
+        Slug = BrandSlug.Create(name.Value).Value!;
         Products = new List<ProductAggregate.Product>(products!);
     }
+    public void UpdateName(BrandName name)
+    {
+        Name = name;
+        Slug = BrandSlug.Create(name.Value).Value!;
+    }
 
-    public static Brand Create(BrandName name, BrandSlug slug, IEnumerable<ProductAggregate.Product>? products = null)
+    public static Brand Create(BrandName name, IEnumerable<ProductAggregate.Product>? products = null)
     {
         products ??= [];
-        return new Brand(name, slug, products);
+        return new Brand(name, products);
     }  
 
 };
