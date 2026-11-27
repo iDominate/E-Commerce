@@ -10,6 +10,6 @@ public interface IImageDatabaseStorageService
     Stream fileStream,
     string contentType);
 
-    Task RemoveImageAsync(Guid productId, string imageName);
+    Task RemoveImageAsync(Guid productId, Guid imageId);
     Task<IEnumerable<ProductImage>> GetImagesAsync(Guid ProductId);
 }
