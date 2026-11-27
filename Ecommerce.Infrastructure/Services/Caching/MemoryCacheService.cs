@@ -17,7 +17,7 @@ public sealed class MemoryCacheService : ICacheService
 
     public Task<T?> GetAsync<T>(string key)
     {
-        _cache.TryGetValue<T>(key, out T? value);
+        _cache.TryGetValue(key, out T? value);
         _logger.LogInformation("Fetch object {Key} from cache", key);
         return Task.FromResult(value);
     }

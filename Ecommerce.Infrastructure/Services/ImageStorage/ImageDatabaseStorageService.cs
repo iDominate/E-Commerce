@@ -1,4 +1,6 @@
 using Ecommerce.Application.Abstractions;
+using Ecommerce.Application.Repositories.Contracts;
+using Ecommerce.Domain.Models.ProductAggregate;
 using Ecommerce.Domain.Models.ProductAggregate.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -7,27 +9,31 @@ namespace Ecommerce.Infrastructure.Services.ImageStorage;
 public class ImageDatabaseStorageService : IImageDatabaseStorageService
 {
     private ILogger<ImageDatabaseStorageService> _logger;
-    private AppDbContext _db;
+    private IRepository<Product> _repo;
 
-    public ImageDatabaseStorageService(AppDbContext db, ILogger<ImageDatabaseStorageService> logger)
+    public ImageDatabaseStorageService(IRepository<Product> db, ILogger<ImageDatabaseStorageService> logger)
     {
         _logger = logger;
-        _db = db;
+        _repo = db;
     }
 
     public async Task<IEnumerable<ProductImage>> GetImagesAsync(Guid productId)
     {
-        var product = await _db.Products.FindAsync(productId);
+        var spec = new Specification<Product>();
+        spec.AddCriteria(p => p.Id == productId);
+        var product = (await _repo.GetEntitiesAsync(spec)).FirstOrDefault();
         _logger.LogInformation("Fetched images for product {productId}", productId);
         return product!.Images;
     }
 
-    public async Task RemoveImageAsync(Guid productId, string imageName)
+    public async Task RemoveImageAsync(Guid productId, Guid imageId)
     {
-        var product = await _db.Products.FindAsync(productId);
-        _logger.LogInformation("Removed image {imageName} for product with id {productId}",
-        imageName, productId);
-        var image = product!.Images.ToList().Find(i => i.ImageName == imageName);
+        var spec = new Specification<Product>();
+        spec.AddCriteria(p => p.Id == productId);
+        var product = (await _repo.GetEntitiesAsync(spec)).FirstOrDefault();
+        _logger.LogInformation("Removed image {imageId} for product with id {productId}",
+        imageId, productId);
+        product!.RemoveImage(imageId);
     }
 
     public async Task<ProductImage> StoreImageAsync(Guid productId,
@@ -35,11 +41,14 @@ public class ImageDatabaseStorageService : IImageDatabaseStorageService
     Stream fileStream,
     string contentType)
     {
-        var product = await _db.Products.FindAsync(productId);
+        var spec = new Specification<Product>();
+        spec.AddCriteria(p => p.Id == productId);
+        var product = (await _repo.GetEntitiesAsync(spec)).FirstOrDefault();
         using var stream = new MemoryStream();
         await fileStream.CopyToAsync(stream);
         var fileBytes = stream.ToArray();
         var newImage = ProductImage.Create(productId, ImageName, fileBytes, contentType);
+        product!.AddImage(newImage.Value!);
         _logger.LogInformation("store image {imageName} with content type {contentType} for product {productId}"
         , ImageName, contentType, productId);
         return newImage.Value!;
