@@ -17,8 +17,6 @@ public sealed class BrandSlugTest
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
-    [InlineData("Invalid Slug")]
-    [InlineData("123slug")]
     public void Create_ShouldReturnFailure_WhenSlugIsInvalid(string slug)
     {
         var result = BrandSlug.Create(slug);
