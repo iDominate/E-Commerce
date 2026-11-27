@@ -5,7 +5,6 @@ namespace Ecommerce.Domain.Models.BrandAggregate.ValueObjects;
 
 public sealed record BrandSlug : ValueObject<BrandSlug, string>
 {
-    private static readonly Regex SlugRegex = new Regex(@"^[a-z0-9]+(-[a-z0-9]+)+$");
     public static IDomainResult<BrandSlug> InvalidSlug => DomainResult<BrandSlug>.Failure(new Error("BrandSlug.Invalid",
             "Invalid brand slug format.", 
             ErrorType.Validation));
@@ -32,10 +31,7 @@ public sealed record BrandSlug : ValueObject<BrandSlug, string>
         {
             return InvalidSlug;
         }
-        if (!SlugRegex.IsMatch(slug))
-        {
-            return InvalidSlug;
-        }
-        return DomainResult<BrandSlug>.Success(new BrandSlug(slug));
+        var normalizedSlug = Normalize(slug);
+        return DomainResult<BrandSlug>.Success(new BrandSlug(normalizedSlug));
     }
 }
