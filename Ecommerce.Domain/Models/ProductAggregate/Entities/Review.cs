@@ -1,5 +1,4 @@
 using Ecommerce.Domain.Models.Shared;
-using OneOf;
 
 namespace Ecommerce.Domain.Models.ProductAggregate.Entities;
 
