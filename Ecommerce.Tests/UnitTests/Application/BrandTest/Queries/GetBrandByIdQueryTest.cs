@@ -4,6 +4,7 @@ using Moq;
 using Ecommerce.Application.Repositories.Contracts;
 using Ecommerce.Domain.Models.BrandAggregate;
 using FluentAssertions;
+using Ecommerce.Application.BrandCQRS.Dtos;
 
 namespace Ecommerce.Tests.UnitTests.Application.BrandTest.Queries;
 
@@ -24,6 +25,6 @@ public sealed class GetBrandByIdQueryTest
         var result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(brand);
+        ((ApplicationResult<BrandDto>)result).Value.Should().BeEquivalentTo(BrandDto.ToDto(brand));
     }
 }
