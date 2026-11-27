@@ -5,14 +5,13 @@ namespace Ecommerce.Tests.IntegrationTests.Shared;
 
 public static class BrandsFactory
 {
-    public static IEnumerable<Brand> Generate(int number)
+    public static IEnumerable<Brand> Generate(int number = 10)
     {
         var faker = new Bogus.Faker<Brand>()
             .CustomInstantiator(f =>
             {
                 var brandName = BrandName.Create(f.Company.CompanyName());
-                var brandSlug = BrandSlug.Create(BrandSlug.Normalize(brandName.Value!.Value));
-                return Brand.Create(brandName.Value, brandSlug.Value!);
+                return Brand.Create(brandName.Value!);
             });
         return faker.Generate(number);
     }
